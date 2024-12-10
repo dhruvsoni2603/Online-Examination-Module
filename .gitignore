@@ -1,0 +1,88 @@
+# General
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.bak
+
+# Node.js (React frontend)
+frontend/node_modules/
+frontend/build/
+frontend/.env
+frontend/.parcel-cache/
+frontend/.next/
+frontend/coverage/
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# Java (Spring Boot backend)
+backend/target/
+backend/.idea/
+backend/.classpath
+backend/.project
+backend/.settings/
+backend/.mvn/
+backend/mvnw
+backend/mvnw.cmd
+backend/*.iml
+backend/logs/
+backend/*.log
+backend/.env
+backend/*.jar
+backend/*.war
+backend/*.ear
+
+# Eclipse IDE files
+*.classpath
+*.project
+*.settings/
+
+# IntelliJ IDEA files
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# VSCode files
+.vscode/
+
+# Logs and temporary files
+*.log
+logs/
+*.swp
+*.swo
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+docker-compose.override.yml
+.env
+
+# Database
+database/*.sql
+database/data/
+
+# Testing
+test-output/
+target/
+
+# Build directories
+build/
+out/
+
+# Coverage reports
+coverage/
+*.lcov
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Production files
+dist/
+.env.production
+package-lock.json
