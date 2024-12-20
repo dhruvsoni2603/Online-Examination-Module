@@ -1,6 +1,5 @@
-package com.oem.backend.service;
+package com.oem.backend.util;
 
-import com.oem.backend.util.KeyGeneratorUtil;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -15,18 +14,20 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
-public class JWTService {
+public class JwtUtil {
 
     private final String secretKey = KeyGeneratorUtil.generateKey();
 
-    public String generateToken(String username) {
+    public String generateToken(String email) {
 
         Map<String, Object> claims = new HashMap<>();
+
+//        System.out.println("Secret key: " + secretKey);
 
         return Jwts.builder()
                 .claims()
                 .add(claims)
-                .subject(username)
+                .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours
                 .and()
@@ -39,8 +40,8 @@ public class JWTService {
         return Keys.hmacShaKeyFor(secretKeyBytes);
     }
 
-    public String extractUsername(String token) {
-        // extract the username from jwt token
+    public String extractEmail(String token) {
+        // Extract email from token
         return extractClaim(token, Claims::getSubject);
     }
 
@@ -58,7 +59,7 @@ public class JWTService {
     }
 
     public boolean validateToken(String token, UserDetails userDetails) {
-        final String userName = extractUsername(token);
+        final String userName = extractEmail(token);
         return (userName.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 

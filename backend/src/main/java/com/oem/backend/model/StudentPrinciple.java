@@ -7,46 +7,46 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Collections;
 
-public class UserPrinciple implements UserDetails {
+public class StudentPrinciple implements UserDetails {
 
-    private Users user;
+    private final Student student;
 
-    public UserPrinciple(Users user) {
-        this.user = user;
+    public StudentPrinciple(Student student) {
+        this.student = student;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("USER"));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_STUDENT"));
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return student.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return student.getEmail();
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return UserDetails.super.isAccountNonExpired();
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return UserDetails.super.isAccountNonLocked();
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return UserDetails.super.isCredentialsNonExpired();
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return UserDetails.super.isEnabled();
     }
 }
