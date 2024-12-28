@@ -5,6 +5,7 @@ import com.oem.backend.repository.StudentExamRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,8 +19,17 @@ public class StudentExamService {
         return studentExamRepository.findAll();
     }
 
-    public List<StudentExam> getStudentExamsByExamId(UUID examId) {
-        return studentExamRepository.findByExamId(examId);
+    public List<String> getStudentExamsByExamId(UUID examId) {
+        List<StudentExam> studentExamList = studentExamRepository.findByExamId(examId);
+        List<String> studentIds = new ArrayList<>();
+
+        for (StudentExam studentExam : studentExamList) {
+            if(studentExam.getStudent() != null && studentExam.getStudent().getId() != null) {
+                studentIds.add(studentExam.getStudent().getId().toString());
+            }
+        }
+
+        return studentIds;
     }
 
     // getStudentExamById
@@ -33,5 +43,9 @@ public class StudentExamService {
 
     public StudentExam createStudentExam(StudentExam studentExam) {
         return studentExamRepository.save(studentExam);
+    }
+
+    public void deleteStudentExam(UUID id) {
+        studentExamRepository.deleteById(id);
     }
 }

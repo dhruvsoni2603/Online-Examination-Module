@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "${frontend_url}")
 public class SampleController {
 
-        @PreAuthorize("hasRole('USER')")
+        @PreAuthorize("hasRole('student')")
         @GetMapping("/hello")
         public String hello() {
             return "Hello, World!";
         }
 
-        @PreAuthorize("hasRole('ADMIN')")
-        @GetMapping("/admin")
+        @PreAuthorize("hasRole('admin')")
+        @GetMapping("/admin/hello")
         public String admin() {
             return "Hello, Admin!";
         }

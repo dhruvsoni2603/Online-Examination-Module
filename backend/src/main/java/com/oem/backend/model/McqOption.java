@@ -1,14 +1,12 @@
 package com.oem.backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.UUID;
 
+@Data
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -25,8 +23,13 @@ public class McqOption {
     @JoinColumn(name = "question_id", referencedColumnName = "id", nullable = false)
     private Question question;
 
+    @Column(nullable = false)
     private String text;
+
+    @Column(nullable = false)
     private boolean isCorrect;
+
+    @Column
     private String imageUrl;
 }
 

@@ -1,9 +1,16 @@
 package com.oem.backend.dto;
 
-public record McqOptionDTO(
-    String id,
-    String questionId,
-    String text,
-    boolean isCorrect,
-    String imageUrl
-) {}
+import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class McqOptionDTO {
+    private String text;
+    @JsonProperty("isCorrect")
+    private boolean isCorrect;
+    private String imageUrl; // Optional
+}

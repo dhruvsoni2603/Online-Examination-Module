@@ -1,6 +1,6 @@
 package com.oem.backend.config;
 
-import com.oem.backend.service.StudentDetailsService;
+import com.oem.backend.service.CustomUserDetailsService;
 import com.oem.backend.util.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,11 +20,14 @@ import java.io.IOException;
 @Component
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtUtil jwtUtil;
+    private final JwtUtil jwtUtil;
 
     @Autowired
     private ApplicationContext context;
+
+    public JwtFilter(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -39,11 +42,11 @@ public class JwtFilter extends OncePerRequestFilter {
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-            UserDetails userDetails = context.getBean(StudentDetailsService.class).loadUserByUsername(email);
+            UserDetails userDetails = context.getBean(CustomUserDetailsService.class).loadUserByUsername(email);
 
 //            System.out.println("User authorities: " + userDetails.getAuthorities());
 
-            if (jwtUtil.validateToken(token, userDetails)) {
+            if (userDetails != null && jwtUtil.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

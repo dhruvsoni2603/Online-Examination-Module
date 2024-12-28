@@ -1,12 +1,8 @@
 package com.oem.backend.service;
 
+import com.oem.backend.dto.AdminRegisterDTO;
 import com.oem.backend.model.Admin;
 import com.oem.backend.repository.AdminRepo;
-import com.oem.backend.util.JwtUtil;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,19 +13,10 @@ import java.util.UUID;
 @Service
 public class AdminService {
 
-    private final AuthenticationManager authManager;
-
-    private final JwtUtil jwtUtil;
-
     private final AdminRepo adminRepository;
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
-
-    public AdminService(AuthenticationManager authManager, JwtUtil jwtUtil, AdminRepo adminRepository) {
-        this.authManager = authManager;
-        this.jwtUtil = jwtUtil;
+    public AdminService(AdminRepo adminRepository) {
         this.adminRepository = adminRepository;
-
     }
 
     public List<Admin> getAllAdmins() {
@@ -55,21 +42,11 @@ public class AdminService {
         adminRepository.deleteById(id);
     }
 
-    public String registerAdmin(Admin admin) {
-        admin.setPassword(bCryptPasswordEncoder.encode(admin.getPassword()));
-        adminRepository.save(admin);
+    public String registerAdmin(AdminRegisterDTO adminRegisterDTO) {
+        adminRepository.save(new Admin(
+                adminRegisterDTO.getName(),
+                adminRegisterDTO.getEmail()
+        ));
         return "Admin registered";
-    }
-
-    public String verifyAdmin(Admin admin) {
-        Authentication authentication = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(admin.getEmail(), admin.getPassword())
-        );
-
-        if (authentication.isAuthenticated()) {
-            return jwtUtil.generateToken(admin.getEmail());
-        } else {
-            return "User not authenticated";
-        }
     }
 }

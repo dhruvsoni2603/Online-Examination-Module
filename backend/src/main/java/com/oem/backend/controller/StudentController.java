@@ -4,6 +4,7 @@ import com.oem.backend.model.Student;
 import com.oem.backend.service.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "${frontend_url}")
+@PreAuthorize("hasRole('admin')")
 @RequestMapping("/api/students")
 public class StudentController {
 

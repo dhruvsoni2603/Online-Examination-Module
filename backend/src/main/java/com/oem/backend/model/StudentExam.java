@@ -1,15 +1,15 @@
 package com.oem.backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@Data
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Getter
@@ -30,14 +30,33 @@ public class StudentExam {
     @JoinColumn(name = "exam_id", referencedColumnName = "id", nullable = false)
     private Exam exam;
 
+    @Column(nullable = false)
     private LocalDateTime startTime;
+
+    @Column(nullable = false)
     private LocalDateTime endTime;
+
+    @Column(nullable = false)
     private Integer score;
+
+    @Column(nullable = false)
     private String status;
+
     private String sessionToken;
+
     private LocalDateTime lastPing;
+
     private boolean isDisconnected;
+
     private Integer disconnectCount;
+
     private Integer remainingTime;
+
+    @CreationTimestamp
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }
 

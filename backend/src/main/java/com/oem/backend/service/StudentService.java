@@ -1,12 +1,8 @@
 package com.oem.backend.service;
 
+import com.oem.backend.dto.StudentRegisterDTO;
 import com.oem.backend.model.Student;
 import com.oem.backend.repository.StudentRepo;
-import com.oem.backend.util.JwtUtil;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,20 +12,11 @@ import java.util.UUID;
 @Service
 public class StudentService {
 
-    private final AuthenticationManager authManager;
-
-    private final JwtUtil jwtUtil;
-
     private final StudentRepo studentRepository;
 
-    private final BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder(12);
-
-    public StudentService(AuthenticationManager authManager, JwtUtil jwtUtil, StudentRepo studentRepository) {
-        this.authManager = authManager;
-        this.jwtUtil = jwtUtil;
+    public StudentService(StudentRepo studentRepository) {
         this.studentRepository = studentRepository;
     }
-
 
     public List<Student> getAllStudents() {
         return studentRepository.findAll();
@@ -53,21 +40,15 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
-    public String registerStudent(Student student) {
-        student.setPassword(bCryptPasswordEncoder.encode(student.getPassword()));
-        studentRepository.save(student);
+    public String registerStudent(StudentRegisterDTO studentRegisterDTO) {
+        studentRepository.save(new Student(
+                studentRegisterDTO.getStudentId(),
+                studentRegisterDTO.getName(),
+                studentRegisterDTO.getEmail(),
+                studentRegisterDTO.getCollegeName(),
+                studentRegisterDTO.getBranch(),
+                studentRegisterDTO.getPhone()
+        ));
         return "Student registered";
-    }
-
-    public String verifyStudent(Student student) {
-        Authentication authentication = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(student.getEmail(), student.getPassword())
-        );
-
-        if (authentication.isAuthenticated()) {
-            return jwtUtil.generateToken(student.getEmail());
-        } else {
-            return "Student not authenticated";
-        }
     }
 }

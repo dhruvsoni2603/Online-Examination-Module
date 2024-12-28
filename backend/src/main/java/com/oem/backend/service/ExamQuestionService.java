@@ -5,6 +5,7 @@ import com.oem.backend.repository.ExamQuestionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,6 +18,19 @@ public class ExamQuestionService {
 
     public List<ExamQuestion> getAllExamQuestions() {
         return examQuestionRepository.findAll();
+    }
+
+    public List<String> getExamQuestionsByExamId(UUID examId) {
+        List<ExamQuestion> examQuestionList = examQuestionRepository.findByExamId(examId);
+        List<String> questionIds = new ArrayList<>();
+
+        for (ExamQuestion examQuestion : examQuestionList) {
+            if(examQuestion.getQuestion() != null && examQuestion.getQuestion().getId() != null) {
+                questionIds.add(examQuestion.getQuestion().getId().toString());
+            }
+        }
+
+        return questionIds;
     }
 
     public Optional<ExamQuestion> getExamQuestionById(UUID id) {
