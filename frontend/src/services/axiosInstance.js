@@ -1,13 +1,14 @@
-import axios from 'axios';
+import axios from "axios";
+import { getToken } from "./jwt";
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:3000/api/auth',
+  baseURL: "http://localhost:3000/api",
 });
 
 // Add JWT token to request headers
 axiosInstance.interceptors.request.use((config) => {
   // Get token from cookie
-  const token = document.cookie?.split(';').find((cookie) => cookie.trim().startsWith('token='))?.split('=')[1];
+  const token = getToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

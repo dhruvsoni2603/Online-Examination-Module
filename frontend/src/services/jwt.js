@@ -39,10 +39,26 @@ export const hasToken = () => {
   return !!Cookies.get('jwt_token');
 };
 
-export const setRole = (role) => {
-  Cookies.set('role', role, cookieOptions);
-};
+export const setUserId = (userId) => {
+  Cookies.set('user_id', userId, cookieOptions);
+}
+
+export const getUserId = () => {
+  return Cookies.get('user_id') || null;
+}
+
+export const removeUserId = () => {
+  Cookies.remove('user_id', { path: '/' });
+}
 
 export const getRole = () => {
   return Cookies.get('role') || null;
-};
+}
+
+export const setRole = (role) => {
+  Cookies.set('role', role, cookieOptions);
+}
+
+export const removeRole = () => {
+  Cookies.remove('role', { path: '/' });
+}

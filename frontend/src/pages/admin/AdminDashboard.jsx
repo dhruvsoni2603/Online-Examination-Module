@@ -1,5 +1,3 @@
 export const AdminDashboard = () => {
-  return (
-    <div>AdminDashboard</div>
-  )
-}
+  return <div className="container p-4 mx-auto">AdminDashboard</div>;
+};
