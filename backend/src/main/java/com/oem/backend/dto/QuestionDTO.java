@@ -14,5 +14,4 @@ public class QuestionDTO {
     private String difficultyLevel;
     private Integer marks;
     private String referenceAnswer;
-    private String imageUrl;
 }

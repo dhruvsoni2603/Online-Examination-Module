@@ -21,6 +21,7 @@ public class ImagekitAuthController {
 
     @GetMapping("/auth")
     public Map<String, String> getAuthenticationParameters() {
-        return imageKit.getAuthenticationParameters();
+        long expirationTimestamp = System.currentTimeMillis() / 1000L + 3600; // 1 hour
+        return imageKit.getAuthenticationParameters(null, expirationTimestamp);
     }
 }

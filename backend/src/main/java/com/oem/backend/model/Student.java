@@ -22,6 +22,11 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    // User id from user entity
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    private User user;
+
     @Column(unique = true)
     private String studentId;
 
@@ -50,12 +55,13 @@ public class Student {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Student(String studentId, String name, String email, String collegeName, String branch, String phone) {
+    public Student(String studentId, String name, String email, String collegeName, String branch, String phone, User user) {
         this.studentId = studentId;
         this.name = name;
         this.email = email;
         this.collegeName = collegeName;
         this.branch = branch;
         this.phone = phone;
+        this.user = user;
     }
 }

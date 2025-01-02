@@ -35,25 +35,69 @@ public class ExamService {
     @Autowired
     private AdminService adminService;
 
+    // Helper method to set ExamDTO
+    private ExamDTO setExamDTO(Exam exam) {
+        ExamDTO examDTO = new ExamDTO();
+
+        examDTO.setId(exam.getId().toString());
+        examDTO.setTitle(exam.getTitle());
+        examDTO.setDescription(exam.getDescription());
+        examDTO.setDuration(exam.getDuration());
+        examDTO.setPassingCriteria(exam.getPassingCriteria());
+        examDTO.setStartingAt(exam.getStartingAt());
+        examDTO.setCreatedBy(exam.getCreatedBy().getId().toString());
+        examDTO.setCreatedAt(exam.getCreatedAt());
+        examDTO.setUpdatedAt(exam.getUpdatedAt());
+        examDTO.setQuestionIds(examQuestionService.getExamQuestionsByExamId(exam.getId()));
+        examDTO.setStudentIds(studentExamService.getStudentExamsByExamId(exam.getId()));
+
+        return examDTO;
+    }
+
+    // Helper method to set ExamQuestions and StudentExams
+    private void setExamQuestionsAndStudentExams(ExamCreationDTO examCreationDTO, Exam savedExam) {
+        for (String questionId : examCreationDTO.getQuestionIds()) {
+            ExamQuestion examQuestion = new ExamQuestion();
+            examQuestion.setExam(savedExam);
+            examQuestion.setQuestion(questionService.getQuestionById(UUID.fromString(questionId)).orElseThrow(() -> new IllegalArgumentException("Question not found")));
+            examQuestionService.createExamQuestion(examQuestion);
+        }
+
+        for (String studentId : examCreationDTO.getStudentIds()) {
+            StudentExam studentExam = new StudentExam();
+            studentExam.setStudent(studentService.getStudentById(UUID.fromString(studentId)).orElseThrow(() -> new IllegalArgumentException("Student not found")));
+            studentExam.setExam(savedExam);
+            studentExam.setStatus("not-started");
+            studentExam.setStartTime(examCreationDTO.getStartingAt());
+            studentExam.setEndTime(examCreationDTO.getStartingAt().plusMinutes(examCreationDTO.getDuration()));
+            studentExam.setScore(0);
+            studentExamService.createStudentExam(studentExam);
+        }
+    }
+
+    // Helper method to delete ExamQuestions and StudentExams
+    private void deleteExamQuestionsAndStudentExams(UUID id) {
+        List<ExamQuestion> examQuestions = examQuestionService.getAllExamQuestions();
+        for (ExamQuestion examQuestion : examQuestions) {
+            if (examQuestion.getExam().getId().equals(id)) {
+                examQuestionService.deleteExamQuestion(examQuestion.getId());
+            }
+        }
+
+        List<StudentExam> studentExams = studentExamService.getAllStudentExams();
+        for (StudentExam studentExam : studentExams) {
+            if (studentExam.getExam().getId().equals(id)) {
+                studentExamService.deleteStudentExam(studentExam.getId());
+            }
+        }
+    }
+
     public List<ExamDTO> getAllExams() {
         List<Exam> exams = examRepository.findAll();
         List<ExamDTO> examDTOs = new ArrayList<>();
 
         for (Exam exam : exams) {
-            ExamDTO examDTO = new ExamDTO();
-
-            examDTO.setId(exam.getId().toString());
-            examDTO.setTitle(exam.getTitle());
-            examDTO.setDescription(exam.getDescription());
-            examDTO.setDuration(exam.getDuration());
-            examDTO.setPassingCriteria(exam.getPassingCriteria());
-            examDTO.setStartingAt(exam.getStartingAt());
-            examDTO.setCreatedBy(exam.getCreatedBy().getId().toString());
-            examDTO.setCreatedAt(exam.getCreatedAt());
-            examDTO.setUpdatedAt(exam.getUpdatedAt());
-            examDTO.setQuestionIds(examQuestionService.getExamQuestionsByExamId(exam.getId()));
-            examDTO.setStudentIds(studentExamService.getStudentExamsByExamId(exam.getId()));
-            examDTOs.add(examDTO);
+            examDTOs.add(setExamDTO(exam));
         }
 
         return examDTOs;
@@ -62,24 +106,13 @@ public class ExamService {
     public Optional<ExamDTO> getExamById(UUID id) {
         Optional<Exam> exam = examRepository.findById(id);
 
-        if (exam.isEmpty()) {
-            return Optional.empty();
-        }
+//        if (exam.isEmpty()) {
+//            return Optional.empty();
+//        }
+//
+//        return Optional.of(setExamDTO(exam.get()));
 
-        ExamDTO examDTO = new ExamDTO();
-        examDTO.setId(exam.get().getId().toString());
-        examDTO.setTitle(exam.get().getTitle());
-        examDTO.setDescription(exam.get().getDescription());
-        examDTO.setDuration(exam.get().getDuration());
-        examDTO.setPassingCriteria(exam.get().getPassingCriteria());
-        examDTO.setStartingAt(exam.get().getStartingAt());
-        examDTO.setCreatedBy(exam.get().getCreatedBy().getId().toString());
-        examDTO.setCreatedAt(exam.get().getCreatedAt());
-        examDTO.setUpdatedAt(exam.get().getUpdatedAt());
-        examDTO.setQuestionIds(examQuestionService.getExamQuestionsByExamId(exam.get().getId()));
-        examDTO.setStudentIds(studentExamService.getStudentExamsByExamId(exam.get().getId()));
-
-        return Optional.of(examDTO);
+        return exam.map(this::setExamDTO);
     }
 
     public Exam createExam(ExamCreationDTO examCreationDTO) {
@@ -87,6 +120,7 @@ public class ExamService {
         exam.setTitle(examCreationDTO.getTitle());
         exam.setDescription(examCreationDTO.getDescription());
         exam.setDuration(examCreationDTO.getDuration());
+        exam.setTotalMarks(examCreationDTO.getTotalMarks());
         exam.setPassingCriteria(examCreationDTO.getPassingCriteria());
         exam.setStartingAt(examCreationDTO.getStartingAt());
 
@@ -100,23 +134,7 @@ public class ExamService {
 
         Exam savedExam = examRepository.save(exam);
 
-        for (String questionId : examCreationDTO.getQuestionIds()) {
-            ExamQuestion examQuestion = new ExamQuestion();
-            examQuestion.setExam(savedExam);
-            examQuestion.setQuestion(questionService.getQuestionById(UUID.fromString(questionId)).get());
-            examQuestionService.createExamQuestion(examQuestion);
-        }
-
-        for (String studentId : examCreationDTO.getStudentIds()) {
-            StudentExam studentExam = new StudentExam();
-            studentExam.setStudent(studentService.getStudentById(UUID.fromString(studentId)).get());
-            studentExam.setExam(savedExam);
-            studentExam.setStatus("not-started");
-            studentExam.setStartTime(examCreationDTO.getStartingAt());
-            studentExam.setEndTime(examCreationDTO.getStartingAt().plusMinutes(examCreationDTO.getDuration()));
-            studentExam.setScore(0);
-            studentExamService.createStudentExam(studentExam);
-        }
+        setExamQuestionsAndStudentExams(examCreationDTO, savedExam);
 
         return savedExam;
     }
@@ -127,9 +145,10 @@ public class ExamService {
         exam.setTitle(examCreationDTO.getTitle());
         exam.setDescription(examCreationDTO.getDescription());
         exam.setDuration(examCreationDTO.getDuration());
+        exam.setTotalMarks(examCreationDTO.getTotalMarks());
         exam.setPassingCriteria(examCreationDTO.getPassingCriteria());
         exam.setStartingAt(examCreationDTO.getStartingAt());
-        exam.setCreatedAt(examRepository.findById(id).get().getCreatedAt());
+        exam.setCreatedAt(examRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Exam not found")).getCreatedAt());
 
         // Validate and set createdBy
         try {
@@ -142,69 +161,16 @@ public class ExamService {
         Exam savedExam = examRepository.save(exam);
 
         // Delete existing exam questions
-        List<ExamQuestion> examQuestions = examQuestionService.getAllExamQuestions();
-        for (ExamQuestion examQuestion : examQuestions) {
-            if (examQuestion.getExam().getId().equals(id)) {
-                examQuestionService.deleteExamQuestion(examQuestion.getId());
-            }
-        }
+        deleteExamQuestionsAndStudentExams(id);
 
-        // Delete existing student exams
-        List<StudentExam> studentExams = studentExamService.getAllStudentExams();
-        for (StudentExam studentExam : studentExams) {
-            if (studentExam.getExam().getId().equals(id)) {
-                studentExamService.deleteStudentExam(studentExam.getId());
-            }
-        }
+        setExamQuestionsAndStudentExams(examCreationDTO, savedExam);
 
-        for (String questionId : examCreationDTO.getQuestionIds()) {
-            ExamQuestion examQuestion = new ExamQuestion();
-            examQuestion.setExam(savedExam);
-            examQuestion.setQuestion(questionService.getQuestionById(UUID.fromString(questionId)).get());
-            examQuestionService.createExamQuestion(examQuestion);
-        }
-
-        for (String studentId : examCreationDTO.getStudentIds()) {
-            StudentExam studentExam = new StudentExam();
-            studentExam.setStudent(studentService.getStudentById(UUID.fromString(studentId)).get());
-            studentExam.setExam(savedExam);
-            studentExam.setStatus("not-started");
-            studentExam.setStartTime(examCreationDTO.getStartingAt());
-            studentExam.setEndTime(examCreationDTO.getStartingAt().plusMinutes(examCreationDTO.getDuration()));
-            studentExam.setScore(0);
-            studentExamService.createStudentExam(studentExam);
-        }
-
-        ExamDTO examDTO = new ExamDTO();
-        examDTO.setId(savedExam.getId().toString());
-        examDTO.setTitle(savedExam.getTitle());
-        examDTO.setDescription(savedExam.getDescription());
-        examDTO.setDuration(savedExam.getDuration());
-        examDTO.setPassingCriteria(savedExam.getPassingCriteria());
-        examDTO.setStartingAt(savedExam.getStartingAt());
-        examDTO.setCreatedBy(savedExam.getCreatedBy().getId().toString());
-        examDTO.setCreatedAt(savedExam.getCreatedAt());
-        examDTO.setUpdatedAt(savedExam.getUpdatedAt());
-        examDTO.setQuestionIds(examQuestionService.getExamQuestionsByExamId(savedExam.getId()));
-        examDTO.setStudentIds(studentExamService.getStudentExamsByExamId(savedExam.getId()));
-
-        return examDTO;
+        return setExamDTO(savedExam);
     }
 
     public void deleteExam(UUID id) {
-        List<ExamQuestion> examQuestions = examQuestionService.getAllExamQuestions();
-        for (ExamQuestion examQuestion : examQuestions) {
-            if (examQuestion.getExam().getId().equals(id)) {
-                examQuestionService.deleteExamQuestion(examQuestion.getId());
-            }
-        }
-
-        List<StudentExam> studentExams = studentExamService.getAllStudentExams();
-        for (StudentExam studentExam : studentExams) {
-            if (studentExam.getExam().getId().equals(id)) {
-                studentExamService.deleteStudentExam(studentExam.getId());
-            }
-        }
+        // Delete existing exam questions and student exams
+        deleteExamQuestionsAndStudentExams(id);
 
         examRepository.deleteById(id);
     }

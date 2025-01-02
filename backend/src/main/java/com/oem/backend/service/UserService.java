@@ -10,6 +10,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class UserService {
 
@@ -47,5 +49,9 @@ public class UserService {
         } else {
             return null;
         }
+    }
+
+    public void deleteUser(UUID id) {
+        userRepository.deleteById(id);
     }
 }

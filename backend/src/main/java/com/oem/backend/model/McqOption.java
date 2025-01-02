@@ -28,8 +28,5 @@ public class McqOption {
 
     @Column(nullable = false)
     private boolean isCorrect;
-
-    @Column
-    private String imageUrl;
 }
 

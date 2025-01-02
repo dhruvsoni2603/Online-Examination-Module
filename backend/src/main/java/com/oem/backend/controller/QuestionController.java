@@ -1,7 +1,9 @@
 package com.oem.backend.controller;
 
 import com.oem.backend.dto.McqQuestionDTO;
+import com.oem.backend.dto.McqQuestionResponseDTO;
 import com.oem.backend.model.Question;
+import com.oem.backend.service.ExamQuestionService;
 import com.oem.backend.service.McqOptionService;
 import com.oem.backend.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +27,11 @@ public class QuestionController {
     @Autowired
     private McqOptionService mcqOptionService;
 
+    @Autowired
+    private ExamQuestionService examQuestionService;
+
     @GetMapping
-    public List<Question> getAllQuestions() {
+    public List<McqQuestionResponseDTO> getAllQuestions() {
         return questionService.getAllQuestions();
     }
 
@@ -53,7 +58,7 @@ public class QuestionController {
 
     @PostMapping("/mcq")
     public String createMcqQuestion(@RequestBody McqQuestionDTO mcqQuestionDTO) {
-        System.out.println(mcqQuestionDTO);
+//        System.out.println(mcqQuestionDTO);
         return questionService.createMcqQuestion(mcqQuestionDTO);
     }
 
@@ -70,7 +75,8 @@ public class QuestionController {
         if (questionService.getQuestionById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        mcqOptionService.getOptionsByQuestionId(id).forEach(mcqOption -> mcqOptionService.deleteMcqOption(mcqOption.getId()));
+        examQuestionService.getExamQuestionsByQuestionId(id).forEach(examQuestion -> examQuestionService.deleteExamQuestion(examQuestion.getId()));
+        mcqOptionService.getMcqOptionsByQuestionId(id).forEach(mcqOption -> mcqOptionService.deleteMcqOption(mcqOption.getId()));
         questionService.deleteQuestion(id);
         return ResponseEntity.noContent().build();
     }

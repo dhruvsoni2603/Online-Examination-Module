@@ -15,6 +15,7 @@ public class ExamDTO {
     private String title;
     private String description;
     private Integer duration;
+    private Integer totalMarks;
     private Integer passingCriteria;
     private LocalDateTime startingAt;
     private String createdBy;

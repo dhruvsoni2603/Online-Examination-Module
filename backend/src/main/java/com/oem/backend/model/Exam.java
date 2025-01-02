@@ -22,15 +22,26 @@ public class Exam {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String description;
+
+    @Column(nullable = false)
     private Integer duration;
+
+    @Column(nullable = false)
+    private Integer totalMarks;
+
+    @Column(nullable = false)
     private Integer passingCriteria;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "created_by", referencedColumnName = "id", nullable = false)
     private Admin createdBy;
 
+    @Column(nullable = false)
     private LocalDateTime startingAt;
 
     @CreationTimestamp
