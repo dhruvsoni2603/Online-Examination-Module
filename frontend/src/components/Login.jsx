@@ -11,54 +11,23 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-import axiosInstance from "@/services/axiosInstance";
-import { Loader } from "lucide-react";
-// import { setRole, setToken } from "@/services/jwt";
-// import useAuth from "@/hooks/useAuth";
+import { Eye, EyeClosed, Loader } from "lucide-react";
+import useAuth from "@/hooks/useAuth";
 
 export function LoginForm({ role }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
   const navigate = useNavigate();
-  //const { setUser } = useAuth(); // Context hook to set authenticated user
+  const { login, isPending } = useAuth(role);
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
-    setLoading(true);
-
-    // console.log(username, password);
-
-    try {
-      const response = await axiosInstance.post(`/${role}/login`, {
-        email,
-        password,
-      });
-
-      console.log(response);
-
-      // const [token, role] = response.data;
-
-      // Securely store the token in cookies
-      // setToken(token);
-
-      // Update the global AuthContext state
-      // setRole(role);
-
-      // Redirect user based on role
-      // navigate(role === "ADMIN" ? "/admin/dashboard" : "/student/exam");
-    } catch (err) {
-      console.log(err);
-      setError(
-        err.response?.data?.message || "Login failed. Please try again."
-      );
-    } finally {
-      setLoading(false);
-    }
+    await login({ email, password });
+    setEmail("");
+    setPassword("");
   };
 
   return (
@@ -80,6 +49,7 @@ export function LoginForm({ role }) {
               src="/roima_logo.png"
               alt="Company Logo"
               className="h-24 mx-auto"
+              loading="lazy"
             />
             <CardTitle className="text-2xl font-semibold text-gray-100">
               {role === "admin" ? "Admin " : ""}
@@ -91,7 +61,7 @@ export function LoginForm({ role }) {
           </CardHeader>
           <CardContent>
             <div className="grid gap-6">
-              {error && <div className="text-sm text-red-500">{error}</div>}
+              {/* {error && <div className="text-sm text-red-500">{error}</div>} */}
               <div className="grid gap-2">
                 <Label htmlFor="email" className="text-gray-100">
                   Email
@@ -105,23 +75,31 @@ export function LoginForm({ role }) {
                   required
                 />
               </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
+              <div className="grid gap-2 items-center">
+                <div className="flex items-center justify-between">
                   <Label htmlFor="password" className="text-gray-100">
                     Password
                   </Label>
+                  {/* Button for viewing password */}
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="text-gray-400 focus:outline-none"
+                  >
+                    {showPassword ? <Eye /> : <EyeClosed />}
+                  </button>
                 </div>
                 <Input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
                   required
                 />
               </div>
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading && <Loader className="w-6 h-6 mr-2 animate-spin" />}
+              <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending && <Loader className="w-6 h-6 mr-2 animate-spin" />}
                 Login
               </Button>
             </div>

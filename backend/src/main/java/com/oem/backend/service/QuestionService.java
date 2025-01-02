@@ -2,6 +2,7 @@ package com.oem.backend.service;
 
 import com.oem.backend.dto.McqOptionDTO;
 import com.oem.backend.dto.McqQuestionDTO;
+import com.oem.backend.dto.McqQuestionResponseDTO;
 import com.oem.backend.model.McqOption;
 import com.oem.backend.model.Question;
 import com.oem.backend.repository.QuestionRepo;
@@ -21,8 +22,22 @@ public class QuestionService {
     @Autowired
     private McqOptionService mcqOptionService;
 
-    public List<Question> getAllQuestions() {
-        return questionRepository.findAll();
+    public List<McqQuestionResponseDTO> getAllQuestions() {
+        List<Question> questions = questionRepository.findAll();
+        return questions.stream().map(question -> {
+            McqQuestionResponseDTO mcqQuestionResponseDTO = new McqQuestionResponseDTO();
+            mcqQuestionResponseDTO.setId(question.getId().toString());
+            mcqQuestionResponseDTO.setText(question.getText());
+            mcqQuestionResponseDTO.setCategory(question.getCategory());
+            mcqQuestionResponseDTO.setType(question.getType());
+            mcqQuestionResponseDTO.setDifficultyLevel(question.getDifficultyLevel());
+            mcqQuestionResponseDTO.setMarks(question.getMarks());
+            mcqQuestionResponseDTO.setReferenceAnswer(question.getReferenceAnswer());
+            mcqQuestionResponseDTO.setOptions(mcqOptionService.getOptionsByQuestionId(question.getId()));
+            mcqQuestionResponseDTO.setCreatedAt(question.getCreatedAt());
+            mcqQuestionResponseDTO.setUpdatedAt(question.getUpdatedAt());
+            return mcqQuestionResponseDTO;
+        }).toList();
     }
 
     public List<Question> getAllQuestionsByType(String type) {
@@ -49,7 +64,6 @@ public class QuestionService {
         question.setType(mcqQuestionDTO.getType());
         question.setDifficultyLevel(mcqQuestionDTO.getDifficultyLevel());
         question.setMarks(mcqQuestionDTO.getMarks());
-        question.setImageUrl(mcqQuestionDTO.getImageUrl());
 
         Question savedQuestion = questionRepository.save(question);
 
@@ -60,7 +74,6 @@ public class QuestionService {
                 mcqOption.setQuestion(savedQuestion);
                 mcqOption.setText(option.getText());
                 mcqOption.setCorrect(option.isCorrect());
-                mcqOption.setImageUrl(option.getImageUrl());
                 mcqOptionService.createMcqOption(mcqOption);
             }
         }

@@ -12,5 +12,4 @@ public class McqOptionDTO {
     private String text;
     @JsonProperty("isCorrect")
     private boolean isCorrect;
-    private String imageUrl; // Optional
 }

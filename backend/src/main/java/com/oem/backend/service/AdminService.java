@@ -2,6 +2,7 @@ package com.oem.backend.service;
 
 import com.oem.backend.dto.AdminRegisterDTO;
 import com.oem.backend.model.Admin;
+import com.oem.backend.model.User;
 import com.oem.backend.repository.AdminRepo;
 import org.springframework.stereotype.Service;
 
@@ -14,9 +15,11 @@ import java.util.UUID;
 public class AdminService {
 
     private final AdminRepo adminRepository;
+    private final UserService userService;
 
-    public AdminService(AdminRepo adminRepository) {
+    public AdminService(AdminRepo adminRepository, UserService userService) {
         this.adminRepository = adminRepository;
+        this.userService = userService;
     }
 
     public List<Admin> getAllAdmins() {
@@ -39,13 +42,27 @@ public class AdminService {
     }
 
     public void deleteAdmin(UUID id) {
+        User user = adminRepository.findById(id).get().getUser();
+
+        if (user != null) {
+            userService.deleteUser(user.getId());
+        } else {
+            System.out.println("User not found");
+            return;
+        }
+
         adminRepository.deleteById(id);
     }
 
     public String registerAdmin(AdminRegisterDTO adminRegisterDTO) {
+        User user = userService.getUserByEmail(adminRegisterDTO.getEmail());
+        if (user == null) {
+            return "User not found";
+        }
         adminRepository.save(new Admin(
                 adminRegisterDTO.getName(),
-                adminRegisterDTO.getEmail()
+                adminRegisterDTO.getEmail(),
+                user
         ));
         return "Admin registered";
     }

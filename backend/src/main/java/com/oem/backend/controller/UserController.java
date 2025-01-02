@@ -1,7 +1,6 @@
 package com.oem.backend.controller;
 
 import com.oem.backend.dto.AdminRegisterDTO;
-import com.oem.backend.dto.StudentRegisterDTO;
 import com.oem.backend.dto.UserRegisterDTO;
 import com.oem.backend.model.User;
 import com.oem.backend.service.AdminService;
@@ -21,13 +20,11 @@ import java.util.Map;
 @RequestMapping("/api/auth")
 public class UserController {
 
+    private final UserService userService;
     @Autowired
     private StudentService studentService;
-
     @Autowired
     private AdminService adminService;
-
-    private final UserService userService;
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -60,30 +57,18 @@ public class UserController {
         }
     }
 
-    // Student Registration
-    @PostMapping("/student/register")
-    public ResponseEntity<String> registerStudent(@RequestBody StudentRegisterDTO studentRegisterDTO) {
-        try {
-            String message = "";
-            message += userService.registerUser(new UserRegisterDTO(studentRegisterDTO.getEmail(), studentRegisterDTO.getPassword(), "student"));
-            message += " ";
-            message += studentService.registerStudent(studentRegisterDTO);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(message);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error during registration: " + e.getMessage());
-        }
-    }
-
     // Admin Registration
     @PostMapping("/admin/register")
     public ResponseEntity<String> registerAdmin(@RequestBody AdminRegisterDTO adminRegisterDTO) {
         try {
+            if (userService.getUserByEmail(adminRegisterDTO.getEmail()) != null) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Email already exists");
+            }
+
             String message = "";
-            message += adminService.registerAdmin(adminRegisterDTO);
-            message += " ";
             message += userService.registerUser(new UserRegisterDTO(adminRegisterDTO.getEmail(), adminRegisterDTO.getPassword(), "admin"));
+            message += " ";
+            message += adminService.registerAdmin(adminRegisterDTO);
 
             return ResponseEntity.status(HttpStatus.CREATED).body(message);
         } catch (Exception e) {

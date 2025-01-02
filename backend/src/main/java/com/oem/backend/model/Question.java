@@ -18,11 +18,12 @@ import java.util.UUID;
 @AllArgsConstructor
 @Table(name = "question")
 public class Question {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "NVARCHAR(MAX)")
     private String text;
 
     @Column(nullable = false)
@@ -39,9 +40,6 @@ public class Question {
 
     @Column
     private String referenceAnswer;
-
-    @Column
-    private String imageUrl;
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)

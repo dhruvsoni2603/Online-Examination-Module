@@ -15,6 +15,5 @@ public class McqQuestionDTO {
     private String type; // Should be "MCQ" for this DTO
     private String difficultyLevel;
     private Integer marks;
-    private String imageUrl; // Optional
     private List<McqOptionDTO> options; // List of MCQ options to be associated with the question
 }

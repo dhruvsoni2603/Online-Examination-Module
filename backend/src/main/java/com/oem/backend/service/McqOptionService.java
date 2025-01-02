@@ -1,5 +1,6 @@
 package com.oem.backend.service;
 
+import com.oem.backend.dto.McqOptionDTO;
 import com.oem.backend.model.McqOption;
 import com.oem.backend.repository.McqOptionRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,17 @@ public class McqOptionService {
         return mcqOptionRepository.findAll();
     }
 
-    public List<McqOption> getOptionsByQuestionId(UUID questionId) {
+    public List<McqOptionDTO> getOptionsByQuestionId(UUID questionId) {
+        List<McqOption> mcqOptions = mcqOptionRepository.findByQuestionId(questionId);
+        return mcqOptions.stream().map(mcqOption -> {
+            McqOptionDTO mcqOptionDTO = new McqOptionDTO();
+            mcqOptionDTO.setText(mcqOption.getText());
+            mcqOptionDTO.setCorrect(mcqOption.isCorrect());
+            return mcqOptionDTO;
+        }).toList();
+    }
+
+    public List<McqOption> getMcqOptionsByQuestionId(UUID questionId) {
         return mcqOptionRepository.findByQuestionId(questionId);
     }
 

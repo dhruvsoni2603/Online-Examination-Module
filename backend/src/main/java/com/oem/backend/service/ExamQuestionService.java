@@ -33,6 +33,10 @@ public class ExamQuestionService {
         return questionIds;
     }
 
+    public List<ExamQuestion> getExamQuestionsByQuestionId(UUID questionId) {
+        return examQuestionRepository.findByQuestionId(questionId);
+    }
+
     public Optional<ExamQuestion> getExamQuestionById(UUID id) {
         return examQuestionRepository.findById(id);
     }

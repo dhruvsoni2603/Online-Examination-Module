@@ -29,6 +29,11 @@ public class Admin {
     @Column(nullable = false)
     private boolean verified;
 
+    // user id from user entity
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
+    private User user;
+
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -36,8 +41,9 @@ public class Admin {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Admin(String name, String email) {
+    public Admin(String name, String email, User user) {
         this.name = name;
         this.email = email;
+        this.user = user;
     }
 }

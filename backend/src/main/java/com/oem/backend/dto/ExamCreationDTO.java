@@ -14,6 +14,7 @@ public class ExamCreationDTO {
     private String title;
     private String description;
     private Integer duration;
+    private Integer totalMarks;
     private Integer passingCriteria;
     private LocalDateTime startingAt;
     private String createdBy; // ID of the admin who created the exam
