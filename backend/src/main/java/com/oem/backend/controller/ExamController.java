@@ -49,6 +49,8 @@ public class ExamController {
         String email = jwtUtil.extractEmail(token);
         Admin admin = adminService.getAdminByEmail(email);
 
+//        System.out.println(admin.getId().toString());
+
         examCreationDTO.setCreatedBy(admin.getId().toString());
         Exam createdExam = examService.createExam(examCreationDTO);
         return ResponseEntity.ok(createdExam.getId().toString());
