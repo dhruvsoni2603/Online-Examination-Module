@@ -7,6 +7,8 @@ const useAppStore = create((set) => ({
   setQuestions: (questions) => set({ questions }),
   students: [],
   setStudents: (students) => set({ students }),
+  exams: [],
+  setExams: (exams) => set({ exams }),
 }));
 
 export default useAppStore;

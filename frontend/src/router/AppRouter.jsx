@@ -88,7 +88,7 @@ const AppRouter = () => {
         >
           <Route path="dashboard" element={<AdminDashboard />} />
           <Route path="exams" element={<ExamsPage />} />
-          <Route path="add-exam" element={<AddExamPage />} />
+          <Route path="create-exam" element={<AddExamPage />} />
           <Route path="edit-exam" element={<AddExamPage />} />
           <Route path="students" element={<StudentsPage />} />
           <Route path="add-student" element={<AddStudentPage />} />

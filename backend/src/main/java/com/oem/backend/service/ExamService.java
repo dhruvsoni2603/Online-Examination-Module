@@ -43,6 +43,7 @@ public class ExamService {
         examDTO.setTitle(exam.getTitle());
         examDTO.setDescription(exam.getDescription());
         examDTO.setDuration(exam.getDuration());
+        examDTO.setTotalMarks(exam.getTotalMarks());
         examDTO.setPassingCriteria(exam.getPassingCriteria());
         examDTO.setStartingAt(exam.getStartingAt());
         examDTO.setCreatedBy(exam.getCreatedBy().getId().toString());
@@ -97,6 +98,7 @@ public class ExamService {
         List<ExamDTO> examDTOs = new ArrayList<>();
 
         for (Exam exam : exams) {
+//            System.out.println(exam);
             examDTOs.add(setExamDTO(exam));
         }
 
@@ -116,6 +118,9 @@ public class ExamService {
     }
 
     public Exam createExam(ExamCreationDTO examCreationDTO) {
+
+//        System.out.println(examCreationDTO);
+
         Exam exam = new Exam();
         exam.setTitle(examCreationDTO.getTitle());
         exam.setDescription(examCreationDTO.getDescription());
