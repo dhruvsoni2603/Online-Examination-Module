@@ -7,7 +7,6 @@ import {
   setRole,
   removeUserId,
   removeRole,
-  getRole,
 } from "../services/jwt";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -23,15 +22,21 @@ const useAuth = () => {
       const { data } = await axios.post(loginUrl, { email, password });
       return data; // Expected to return a JWT token, userId & role
     },
-    onSuccess: async (data, variables) => {
+    onSuccess: async (data) => {
       if (data.token) {
+
+        // console.log("Data:", data);
+
         setToken(data.token); // Store token securely
         setUserId(data.userId);
         setRole(data.role);
 
         // Navigate based on role
+
+        // console.log("Role:", variables.role);
+
         const dashboardPath =
-          variables.role === "student" ? "/student/exam" : "/admin/dashboard";
+          data.role === "student" ? "/student/exam" : "/admin/dashboard";
         navigate(dashboardPath, { replace: true });
       } else {
         console.error("Login failed:", data.message);
@@ -47,17 +52,17 @@ const useAuth = () => {
 
   // Logout Function
   const logout = () => {
-    const role = getRole();
-
     removeToken(); // Remove token
     removeUserId();
     removeRole();
 
-    if (role === "admin") {
-      navigate("/login/admin", { replace: true }); // Redirect to admin login
-    } else {
-      navigate("/login/student", { replace: true }); // Redirect to login
-    }
+    // if (role === "admin") {
+    //   navigate("/login/admin", { replace: true }); // Redirect to admin login
+    // } else {
+    //   navigate("/login/student", { replace: true }); // Redirect to login
+    // }
+
+    navigate("/login", { replace: true }); // Redirect to login
   };
 
   // Check Authentication

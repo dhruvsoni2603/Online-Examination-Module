@@ -1,6 +1,4 @@
-/* eslint-disable react/prop-types */
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,33 +12,21 @@ import { Label } from "@/components/ui/label";
 import { Eye, EyeClosed, Loader } from "lucide-react";
 import useAuth from "@/hooks/useAuth";
 
-export function LoginForm({ role }) {
+export function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const navigate = useNavigate();
-  const { login, isPending } = useAuth(role);
+  const { login, isPending } = useAuth();
 
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     await login({ email, password });
-    setEmail("");
-    setPassword("");
   };
 
   return (
-    <>
-      {/* Admin Login button */}
-      {role === "student" && (
-        <Button
-          onClick={() => navigate("/login/admin")}
-          className="absolute top-4 right-4"
-        >
-          Admin Login
-        </Button>
-      )}
+    <div className="flex items-center justify-center h-screen bg-gray-900">
       <form onSubmit={handleSubmit}>
         <Card className="mx-auto max-w-sm bg-gray-800 shadow-2xl rounded-lg min-w-72">
           <CardHeader className="flex flex-col items-center">
@@ -52,7 +38,6 @@ export function LoginForm({ role }) {
               loading="lazy"
             />
             <CardTitle className="text-2xl font-semibold text-gray-100">
-              {role === "admin" ? "Admin " : ""}
               Login
             </CardTitle>
             <CardDescription className="text-sm text-gray-400">
@@ -106,6 +91,6 @@ export function LoginForm({ role }) {
           </CardContent>
         </Card>
       </form>
-    </>
+    </div>
   );
 }

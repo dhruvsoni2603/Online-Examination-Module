@@ -92,7 +92,8 @@ export const AddStudentPage = () => {
 
   const randomPasswordGenerator = () => {
     const length = 8;
-    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$&";
+    const charset =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$&";
     let password = "";
 
     for (let i = 0; i < length; i++) {
@@ -107,7 +108,6 @@ export const AddStudentPage = () => {
     e.preventDefault();
 
     // Validation
-
     if (!studentId) {
       toast({
         title: "Student ID is required",
@@ -151,17 +151,38 @@ export const AddStudentPage = () => {
       return;
     }
 
-    const newStudent = {
-      studentId,
-      name,
-      email,
-      password: randomPasswordGenerator(),
-      collegeName,
-      branch,
-      phone,
-    };
+    const studentPassword = randomPasswordGenerator();
+    // console.log(studentPassword);
 
-    createStudentMutation.mutate(newStudent);
+    if (location.state?.student) {
+      const updatedStudent = {
+        id: student.id,
+        studentId,
+        name,
+        email,
+        collegeName,
+        branch,
+        phone,
+      };
+
+      createStudentMutation.mutate(updatedStudent);
+    } else {
+      const newStudent = {
+        studentId,
+        name,
+        email,
+        password: studentPassword,
+        collegeName,
+        branch,
+        phone,
+      };
+
+      // console.log(newStudent);
+
+      createStudentMutation.mutate(newStudent);
+    }
+
+    // createStudentMutation.mutate(newStudent);
   };
 
   const handleReset = () => {
@@ -194,7 +215,12 @@ export const AddStudentPage = () => {
             </p>
           </div>
           <div className="flex flex-col-reverse md:flex-row justify-end items-center gap-2 md:gap-4">
-            <Button type="reset" variant="outline" className="w-full md:w-auto" onClick={handleReset}>
+            <Button
+              type="reset"
+              variant="outline"
+              className="w-full md:w-auto"
+              onClick={handleReset}
+            >
               <RotateCcw className="h-6 w-6" />
               Reset
             </Button>

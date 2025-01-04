@@ -1,5 +1,6 @@
 package com.oem.backend.service;
 
+import com.oem.backend.dto.UserLoginDTO;
 import com.oem.backend.dto.UserRegisterDTO;
 import com.oem.backend.model.User;
 import com.oem.backend.repository.UserRepo;
@@ -39,12 +40,13 @@ public class UserService {
         return "User registered";
     }
 
-    public String verifyUser(User user) {
+    public String verifyUser(UserLoginDTO userLoginDTO) {
         Authentication authentication = authManager.authenticate(
-                new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword())
+                new UsernamePasswordAuthenticationToken(userLoginDTO.getEmail(), userLoginDTO.getPassword())
         );
 
         if (authentication.isAuthenticated()) {
+            User user = getUserByEmail(userLoginDTO.getEmail());
             return jwtUtil.generateToken(user.getEmail(), user.getRole());
         } else {
             return null;

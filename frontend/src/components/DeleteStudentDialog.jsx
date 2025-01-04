@@ -11,7 +11,7 @@ export const DeleteStudentDialog = ({ selectedStudent, handleDialogClose }) => {
 
   const queryClient = useQueryClient();
 
-  console.log(selectedStudent);
+  // console.log(selectedStudent);
 
   const deleteMutation = useMutation({
     mutationFn: async () => {

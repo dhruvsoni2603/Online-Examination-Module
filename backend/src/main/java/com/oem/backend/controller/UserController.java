@@ -1,10 +1,9 @@
 package com.oem.backend.controller;
 
 import com.oem.backend.dto.AdminRegisterDTO;
+import com.oem.backend.dto.UserLoginDTO;
 import com.oem.backend.dto.UserRegisterDTO;
-import com.oem.backend.model.User;
 import com.oem.backend.service.AdminService;
-import com.oem.backend.service.StudentService;
 import com.oem.backend.service.UserService;
 import com.oem.backend.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,8 +21,6 @@ public class UserController {
 
     private final UserService userService;
     @Autowired
-    private StudentService studentService;
-    @Autowired
     private AdminService adminService;
     @Autowired
     private JwtUtil jwtUtil;
@@ -33,10 +30,10 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String, Object>> loginUser(@RequestBody User user) {
+    public ResponseEntity<Map<String, Object>> loginUser(@RequestBody UserLoginDTO userLoginDTO) {
         Map<String, Object> response = new HashMap<>();
         try {
-            String token = userService.verifyUser(user);
+            String token = userService.verifyUser(userLoginDTO);
             if (token == null) {
                 response.put("error", "Invalid credentials or user not found");
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
