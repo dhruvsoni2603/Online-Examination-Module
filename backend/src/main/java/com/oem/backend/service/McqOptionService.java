@@ -29,6 +29,10 @@ public class McqOptionService {
         }).toList();
     }
 
+    public McqOption getMcqOptionById(UUID id) {
+        return mcqOptionRepository.findById(id).orElse(null);
+    }
+
     public List<McqOption> getMcqOptionsByQuestionId(UUID questionId) {
         return mcqOptionRepository.findByQuestionId(questionId);
     }
@@ -39,5 +43,9 @@ public class McqOptionService {
 
     public void deleteMcqOption(UUID id) {
         mcqOptionRepository.deleteById(id);
+    }
+
+    public McqOption getCorrectOptionByQuestionId(UUID questionId) {
+        return mcqOptionRepository.findByQuestionId(questionId).stream().filter(McqOption::isCorrect).findFirst().orElse(null);
     }
 }

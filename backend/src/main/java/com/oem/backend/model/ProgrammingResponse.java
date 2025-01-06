@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -29,11 +32,18 @@ public class ProgrammingResponse {
     @JoinColumn(name = "question_id", referencedColumnName = "id", nullable = false)
     private Question question;
 
-    @Lob
+    @Column(nullable = false)
     private String answer;
 
+    @Column(nullable = false)
     private String language;
-    private Integer timeSpent;
-    private Integer marks;
+
+    @Column(nullable = false)
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+
+    @Column(nullable = false)
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }
 

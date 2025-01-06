@@ -1,5 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchExams, fetchQuestions, fetchStudents } from "@/services/api";
+import {
+  fetchAdmin,
+  fetchExamById,
+  fetchExamResults,
+  fetchExams,
+  fetchQuestions,
+  fetchStudentExam,
+  fetchStudents,
+} from "@/services/api";
 import useGlobalStore from "@/store/globalStore";
 import { useEffect } from "react";
 
@@ -56,4 +64,48 @@ export const useFetchExams = () => {
   }, [data, setExams]);
 
   return { exams: data, isLoading, error, refetch };
+};
+
+export const useFetchStudentExam = (studentId) => {
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["student-exam", studentId],
+    queryFn: () => fetchStudentExam(studentId),
+  });
+
+  const setStudentExam = useGlobalStore((state) => state.setStudentExam);
+
+  useEffect(() => {
+    if (data) {
+      setStudentExam(data);
+    }
+  }, [data, setStudentExam]);
+
+  return { exam: data, isLoading, error, refetch };
+};
+
+export const useFetchExamResults = () => {
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["exam-results"],
+    queryFn: fetchExamResults,
+  });
+
+  return { examResults: data, isLoading, error, refetch };
+}
+
+export const useFetchExamResultById = (examId) => {
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["exam-result", examId],
+    queryFn: () => fetchExamById(examId),
+  });
+
+  return { examResult: data, isLoading, error, refetch };
+};
+
+export const useFetchAdmin = (adminId) => {
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["admin", adminId],
+    queryFn: () => fetchAdmin(adminId),
+  });
+
+  return { admin: data, isLoading, error, refetch };
 };

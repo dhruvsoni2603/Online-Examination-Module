@@ -9,7 +9,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { TextEditor } from "@/components/TextEditor";
-import useAuth from "@/hooks/useAuth";
 import axiosInstance from "@/services/axiosInstance";
 import { getToken } from "@/services/jwt";
 import { useMutation } from "@tanstack/react-query";
@@ -20,7 +19,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 
 export const AddQuestionPage = () => {
-  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -58,7 +56,7 @@ export const AddQuestionPage = () => {
     question.referenceAnswer || ""
   );
 
-  // console.log("Correct Option: " + correctOption); 
+  // console.log("Correct Option: " + correctOption);
 
   const mutation = useMutation({
     mutationFn: async (newQuestion) => {
@@ -121,10 +119,6 @@ export const AddQuestionPage = () => {
       console.error("Error: ", error);
     },
   });
-
-  if (!isAuthenticated()) {
-    navigate("/login/admin");
-  }
 
   const handleQuestionSubmit = async (e) => {
     e.preventDefault();

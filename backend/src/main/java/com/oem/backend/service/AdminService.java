@@ -1,5 +1,6 @@
 package com.oem.backend.service;
 
+import com.oem.backend.dto.AdminDTO;
 import com.oem.backend.dto.AdminRegisterDTO;
 import com.oem.backend.model.Admin;
 import com.oem.backend.model.User;
@@ -28,6 +29,20 @@ public class AdminService {
 
     public Optional<Admin> getAdminById(UUID id) {
         return adminRepository.findById(id);
+    }
+
+    public Optional<AdminDTO> getAdminDTOById(UUID id) {
+        Optional<Admin> admin = adminRepository.findById(id);
+        AdminDTO adminDTO = new AdminDTO();
+        admin.ifPresent(value -> {
+            adminDTO.setId(value.getId().toString());
+            adminDTO.setName(value.getName());
+            adminDTO.setEmail(value.getEmail());
+            adminDTO.setVerified(value.getUser().isVerified());
+            adminDTO.setCreatedAt(value.getCreatedAt());
+            adminDTO.setUpdatedAt(value.getUpdatedAt());
+        });
+        return Optional.of(adminDTO);
     }
 
     // Get Admin by email

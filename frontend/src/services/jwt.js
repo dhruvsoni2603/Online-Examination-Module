@@ -39,6 +39,10 @@ export const hasToken = () => {
   return !!Cookies.get('jwt_token');
 };
 
+/**
+ * Set user ID in cookies
+ * @param {string} userId - User ID to store
+ */
 export const setUserId = (userId) => {
   Cookies.set('user_id', userId, cookieOptions);
 }
@@ -49,6 +53,30 @@ export const getUserId = () => {
 
 export const removeUserId = () => {
   Cookies.remove('user_id', { path: '/' });
+}
+
+export const setAdminId = (adminId) => {
+  Cookies.set('admin_id', adminId, cookieOptions);
+}
+
+export const getAdminId = () => {
+  return Cookies.get('admin_id') || null;
+}
+
+export const removeAdminId = () => {
+  Cookies.remove('admin_id', { path: '/' });
+}
+
+export const setStudentId = (studentId) => {
+  Cookies.set('student_id', studentId, cookieOptions);
+}
+
+export const getStudentId = () => {
+  return Cookies.get('student_id') || null;
+}
+
+export const removeStudentId = () => {
+  Cookies.remove('student_id', { path: '/' });
 }
 
 export const getRole = () => {

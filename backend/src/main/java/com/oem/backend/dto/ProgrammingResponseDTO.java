@@ -1,11 +1,15 @@
 package com.oem.backend.dto;
 
-public record ProgrammingResponseDTO(
-    String id,
-    String studentExamId,
-    String questionId,
-    String answer,
-    String language,
-    Integer timeSpent,
-    Integer marks
-) {}
+import lombok.*;
+
+@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class ProgrammingResponseDTO {
+    private String studentExamId;
+    private String questionId;
+    private String answer;
+    private String language;
+}

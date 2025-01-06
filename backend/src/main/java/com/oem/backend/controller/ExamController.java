@@ -57,7 +57,7 @@ public class ExamController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ExamDTO> updateExam(@PathVariable UUID id, @RequestBody ExamCreationDTO examCreationDTO) {
+    public ResponseEntity<ExamDTO> updateExam(@PathVariable UUID id, @RequestBody ExamCreationDTO examCreationDTO, HttpServletRequest request) {
         if (examService.getExamById(id).isEmpty()) {
             return ResponseEntity.notFound().build();
         }

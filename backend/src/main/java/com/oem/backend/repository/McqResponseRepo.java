@@ -8,4 +8,6 @@ import java.util.UUID;
 
 public interface McqResponseRepo extends JpaRepository<McqResponse, UUID> {
     List<McqResponse> findByStudentExamId(UUID studentExamId);
+
+    List<McqResponse> findBySelectedOptionId(UUID selectedOption_id);
 }

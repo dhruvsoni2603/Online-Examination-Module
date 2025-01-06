@@ -21,10 +21,13 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
+
     @Autowired
     private StudentService studentService;
+
     @Autowired
     private AdminService adminService;
+
     @Autowired
     private JwtUtil jwtUtil;
 
@@ -49,6 +52,12 @@ public class UserController {
 
             String role = userService.getUserByEmail(jwtUtil.extractEmail(token)).getRole();
             response.put("role", role);
+
+            if (role.equals("admin")) {
+                response.put("adminId", adminService.getAdminByEmail(jwtUtil.extractEmail(token)).getId().toString());
+            } else if (role.equals("student")) {
+                response.put("studentId", studentService.getStudentByEmail(jwtUtil.extractEmail(token)).getId().toString());
+            }
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {

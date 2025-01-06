@@ -8,5 +8,7 @@ import java.util.UUID;
 
 public interface ProgrammingResponseRepo extends JpaRepository<ProgrammingResponse, UUID> {
     List<ProgrammingResponse> findByStudentExamId(UUID studentExamId);
+
+    List<ProgrammingResponse> findByQuestionId(UUID questionId);
 }
 
