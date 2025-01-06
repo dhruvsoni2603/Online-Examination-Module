@@ -1,4 +1,5 @@
 import { ExamCard } from "@/components/ExamCard";
+import { ResultCard } from "@/components/ResultCard";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useFetchExamResults, useFetchExams } from "@/hooks/useFetchData";
@@ -34,7 +35,7 @@ export const AdminDashboard = () => {
         <div className="flex flex-wrap justify-between items-center gap-2 w-full">
           <Button
             className="w-[20%] h-12 text-lg"
-            onClick={() => navigate("/admin/exams")}
+            onClick={() => navigate("/admin/create-exam")}
           >
             <BadgePlus
               style={{ height: "1.5rem", width: "1.5rem" }}
@@ -42,21 +43,30 @@ export const AdminDashboard = () => {
             />
             Create Exam
           </Button>
-          <Button className="w-[20%] h-12 text-lg">
+          <Button
+            className="w-[20%] h-12 text-lg"
+            onClick={() => navigate("/admin/add-student")}
+          >
             <UserPlus
               style={{ height: "1.5rem", width: "1.5rem" }}
               className="mr-2"
             />
             Add Student
           </Button>
-          <Button className="w-[20%] h-12 text-lg">
+          <Button
+            className="w-[20%] h-12 text-lg"
+            onClick={() => navigate("/admin/add-question")}
+          >
             <CirclePlus
               style={{ height: "1.5rem", width: "1.5rem" }}
               className="mr-2"
             />
             Add Question
           </Button>
-          <Button className="w-[20%] h-12 text-lg">
+          <Button
+            className="w-[20%] h-12 text-lg"
+            onClick={() => navigate("/admin/results")}
+          >
             <Target
               style={{ height: "1.5rem", width: "1.5rem" }}
               className="mr-2"
@@ -70,7 +80,9 @@ export const AdminDashboard = () => {
         <h1 className="text-lg font-bold mb-2">Recently Created Exams</h1>
         {areExamsLoading && <Loader />}
         {examsError && (
-          <div className="text-red-500 font-bold">Error: {examsError.message}</div>
+          <div className="text-red-500 font-bold">
+            Error: {examsError.message}
+          </div>
         )}
         {exams && exams.length === 0 && (
           <div className="text-red-500 font-bold">No exams found</div>
@@ -89,34 +101,17 @@ export const AdminDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {areResultsLoading && <Loader />}
           {resultsError && (
-            <div className="text-red-500 font-bold">Error: {resultsError.message}</div>
-          )}
-          {examResults.map((result) => (
-            <div
-              key={result.examId}
-              className="bg-gray-800 rounded-lg p-4 shadow-lg text-white w-fit"
-            >
-              <h2 className="text-xl font-bold mb-2">{result.title}</h2>
-              <div className="flex justify-between items-center gap-2 mt-2">
-                <div className="flex gap-2">
-                  <Badge className="bg-green-700 hover:bg-green-600">
-                    {result.mcqQuestions.length} MCQs
-                  </Badge>
-                  <Badge className="bg-blue-700 hover:bg-blue-600">
-                    {result.programmingQuestions.length} Programming
-                  </Badge>
-                  <Badge className="bg-yellow-700 hover:bg-yellow-600">
-                    {result.passedStudents.length} Passed
-                  </Badge>
-                </div>
-                <div className="">
-                  <Button size="sm">
-                    <Eye className="h-6 w-6" />
-                  </Button>
-                </div>
-              </div>
+            <div className="text-red-500 font-bold">
+              Error: {resultsError.message}
             </div>
-          ))}
+          )}
+          {examResults && examResults.length > 0 && (
+            <div className="">
+              {examResults.map((result) => (
+                <ResultCard key={result.examId} result={result} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
