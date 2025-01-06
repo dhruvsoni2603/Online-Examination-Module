@@ -1,18 +1,27 @@
 package com.oem.backend.dto;
 
-import java.time.LocalDateTime;
+import lombok.*;
 
-public record StudentExamDTO(
-    String id,
-    String studentId,
-    String examId,
-    LocalDateTime startTime,
-    LocalDateTime endTime,
-    Integer score,
-    String status,
-    String sessionToken,
-    LocalDateTime lastPing,
-    boolean isDisconnected,
-    Integer disconnectCount,
-    Integer remainingTime
-) {}
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class StudentExamDTO {
+    private String id;
+    private String examId;
+    private String studentId;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private Integer score;
+    private String status;
+    private String sessionToken;
+    private LocalDateTime lastPing;
+    private boolean isDisconnected;
+    private Integer disconnectCount;
+    private Integer remainingTime;
+    private List<QuestionDTO> questions;
+}

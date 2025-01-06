@@ -19,7 +19,7 @@ public class McqOption {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "question_id", referencedColumnName = "id", nullable = false)
     private Question question;
 

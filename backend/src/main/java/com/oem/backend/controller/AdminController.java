@@ -1,5 +1,6 @@
 package com.oem.backend.controller;
 
+import com.oem.backend.dto.AdminDTO;
 import com.oem.backend.dto.AdminRegisterDTO;
 import com.oem.backend.dto.UserRegisterDTO;
 import com.oem.backend.model.Admin;
@@ -35,8 +36,8 @@ public class AdminController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Admin> getAdminById(@PathVariable UUID id) {
-        Optional<Admin> admin = adminService.getAdminById(id);
+    public ResponseEntity<AdminDTO> getAdminById(@PathVariable UUID id) {
+        Optional<AdminDTO> admin = adminService.getAdminDTOById(id);
         return admin.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 

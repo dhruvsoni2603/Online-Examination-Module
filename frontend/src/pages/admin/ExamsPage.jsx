@@ -93,13 +93,6 @@ export const ExamsPage = () => {
               onDelete={() => handleDialogOpen("delete", exam)}
             />
           ))}
-          {/* <ExamCard />
-          <ExamCard />
-          <ExamCard />
-          <ExamCard />
-          <ExamCard />
-          <ExamCard />
-          <ExamCard /> */}
         </div>
       </div>
       {dialogType === "view" && <ViewExamDialog exam={selectedExam} />}

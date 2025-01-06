@@ -1,5 +1,6 @@
 package com.oem.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
@@ -17,12 +18,13 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "student_exam")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class StudentExam {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_id", referencedColumnName = "id", nullable = false)
     private Student student;
 

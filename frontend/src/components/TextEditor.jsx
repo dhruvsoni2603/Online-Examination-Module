@@ -8,7 +8,6 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import MenuBar from "./EditorMenuBar";
 import Image from "@tiptap/extension-image";
-// import { useEffect } from "react";
 
 const handleMenuClick = (event) => {
   event.preventDefault();

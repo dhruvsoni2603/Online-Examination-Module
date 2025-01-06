@@ -1,10 +1,14 @@
 package com.oem.backend.dto;
 
-public record McqResponseDTO(
-    String id,
-    String studentExamId,
-    String questionId,
-    String selectedOptionId,
-    Integer timeSpent,
-    Integer marks
-) {}
+import lombok.*;
+
+@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+public class McqResponseDTO{
+    private String studentExamId;
+    private String questionId;
+    private String selectedOptionId;
+}

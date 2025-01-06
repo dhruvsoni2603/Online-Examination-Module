@@ -7,9 +7,7 @@ import {
 } from "react-router-dom";
 
 // Import your page components
-import { getToken } from "@/services/jwt";
-import { StudentLogin } from "@/pages/student/StudentLogin";
-import { AdminLogin } from "@/pages/admin/AdminLogin";
+import { getRole, getToken } from "@/services/jwt";
 import { ExamPage } from "@/pages/student/Exampage";
 import { AdminDashboard } from "@/pages/admin/AdminDashboard";
 import { NotFound } from "@/pages/NotFound";
@@ -22,25 +20,28 @@ import { ResultsPage } from "@/pages/admin/ResultsPage";
 import { AddQuestionPage } from "@/pages/admin/AddQuestionPage";
 import { AddStudentPage } from "@/pages/admin/AddStudentPage";
 import { AddExamPage } from "@/pages/admin/AddExamPage";
+import { LoginForm } from "@/components/Login";
 
-// Private Route wrapper to check authentication
-const PrivateRoute = ({ children }) => {
+// Private Route wrapper to check authentication and role
+const PrivateRoute = ({ children, allowedRoles }) => {
   const token = getToken();
-  const role = token ? token.role : null;
+  const role = getRole();
 
-  return token ? (
-    children
-  ) : role === "admin" ? (
-    <Navigate to="/login/admin" replace />
-  ) : (
-    <Navigate to="/login/student" replace />
-  );
+  if (!token) {
+    return <Navigate to="/login" state={{ from: window.location.pathname }} replace />;
+  }
+
+  if (!allowedRoles.includes(role)) {
+    return <Navigate to="/login" state={{ from: window.location.pathname }} />;
+  }
+
+  return children;
 };
 
 // App Router Component
 const AppRouter = () => {
   const token = getToken();
-  const role = token ? token.role : null;
+  const role = getRole();
 
   // console.log(token, role);
 
@@ -49,19 +50,15 @@ const AppRouter = () => {
       <Routes>
         {/* Login Routes with verification that user is not already logged in */}
         <Route
-          path="/login/student"
+          path="/login"
           element={
-            token && role === "admin" ? (
-              <Navigate to="/student/exam" replace />
+            token && role === "student" ? (
+              <Navigate to="/student/exam" />
+            ) : token && role === "admin" ? (
+              <Navigate to="/admin/dashboard" />
             ) : (
-              <StudentLogin />
+              <LoginForm />
             )
-          }
-        />
-        <Route
-          path="/login/admin"
-          element={
-            token ? <Navigate to="/admin/dashboard" replace /> : <AdminLogin />
           }
         />
 
@@ -69,7 +66,7 @@ const AppRouter = () => {
         <Route
           path="/student/"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={["student"]}>
               <StudentLayout />
             </PrivateRoute>
           }
@@ -81,7 +78,7 @@ const AppRouter = () => {
         <Route
           path="/admin/"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={["admin"]}>
               <AdminLayout />
             </PrivateRoute>
           }
@@ -96,15 +93,18 @@ const AppRouter = () => {
           <Route path="questions" element={<QuestionsPage />} />
           <Route path="add-question" element={<AddQuestionPage />} />
           <Route path="edit-question" element={<AddQuestionPage />} />
-          <Route path="results" element={<ResultsPage />} />
+          <Route path="results" element={<ResultsPage />}>
+            <Route path=":examId" element={<ResultsPage />} />
+          </Route>
         </Route>
 
         {/* Redirect root to login */}
-        <Route path="/" element={<Navigate to="/login/student" replace />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
 
         {/* Catch-all for 404 */}
         <Route path="*" element={<NotFound />} />
         <Route path="/admin/*" element={<NotFound />} />
+        <Route path="/student/*" element={<NotFound />} />
       </Routes>
     </Router>
   );

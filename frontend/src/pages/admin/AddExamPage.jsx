@@ -1,21 +1,28 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import useAuth from "@/hooks/useAuth";
-import { useFetchQuestions, useFetchStudents } from "@/hooks/useFetchData";
+import {
+  useFetchAdmin,
+  useFetchQuestions,
+  useFetchStudents,
+} from "@/hooks/useFetchData";
 import axiosInstance from "@/services/axiosInstance";
-import { getToken } from "@/services/jwt";
+import { getAdminId, getToken } from "@/services/jwt";
 import { useMutation } from "@tanstack/react-query";
 import { Loader, PlusCircle, RotateCcw } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { MultiSelectInput } from "@/components/MultiSelectInput";
 import { Textarea } from "@/components/ui/textarea";
 
 export const AddExamPage = () => {
-  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const adminId = getAdminId();
+
+  // const { admin } = useFetchAdmin(adminId);
+  // console.log(admin);
 
   const { toast } = useToast();
 
@@ -88,7 +95,7 @@ export const AddExamPage = () => {
   );
   const [examStudentIds, setExamStudentIds] = useState(exam?.studentIds || []);
 
-  // console.log(examQuestionIds);
+  console.log(examTotalMarks);
 
   const createExamMutation = useMutation({
     mutationFn: async (newExam) => {
@@ -147,10 +154,6 @@ export const AddExamPage = () => {
     },
   });
 
-  if (!isAuthenticated) {
-    navigate("/login");
-  }
-
   const countTotalMarks = () => {
     let totalMarks = 0;
     examQuestionIds.forEach((id) => {
@@ -158,12 +161,8 @@ export const AddExamPage = () => {
       // console.log(question);
       totalMarks += question?.marks;
     });
-    setExamTotalMarks(totalMarks);
+    return totalMarks;
   };
-
-  useEffect(() => {
-    countTotalMarks();
-  }, [examQuestionIds]);
 
   const handleExamSubmit = (e) => {
     e.preventDefault();
@@ -234,6 +233,9 @@ export const AddExamPage = () => {
 
     // console.log(typeof examPassingMarks);
 
+    const totalMarks = countTotalMarks();
+    setExamTotalMarks(totalMarks);
+
     const newExam = {
       title: examTitle,
       description: examDescription,
@@ -244,6 +246,11 @@ export const AddExamPage = () => {
       questionIds: examQuestionIds,
       studentIds: examStudentIds,
     };
+
+    if (location.pathname.includes("edit-exam")) {
+      newExam.id = exam.id;
+      newExam.createdBy = exam.createdBy;
+    }
 
     console.log(newExam);
 

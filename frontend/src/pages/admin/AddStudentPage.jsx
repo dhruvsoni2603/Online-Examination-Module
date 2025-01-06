@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import useAuth from "@/hooks/useAuth";
 import axiosInstance from "@/services/axiosInstance";
 import { getToken } from "@/services/jwt";
 import { useMutation } from "@tanstack/react-query";
@@ -11,7 +10,6 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export const AddStudentPage = () => {
-  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -85,10 +83,6 @@ export const AddStudentPage = () => {
       console.error(error);
     },
   });
-
-  if (!isAuthenticated) {
-    navigate("/login");
-  }
 
   const randomPasswordGenerator = () => {
     const length = 8;

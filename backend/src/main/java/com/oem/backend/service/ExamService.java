@@ -145,6 +145,9 @@ public class ExamService {
     }
 
     public ExamDTO updateExam(UUID id, ExamCreationDTO examCreationDTO) {
+
+        System.out.println(examCreationDTO);
+
         Exam exam = new Exam();
         exam.setId(id);
         exam.setTitle(examCreationDTO.getTitle());

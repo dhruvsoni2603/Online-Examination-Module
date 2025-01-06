@@ -17,10 +17,14 @@ import {
 import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
+import { useLocation, useNavigate } from "react-router-dom";
 
 /* eslint-disable react/prop-types */
 export const ExamCard = ({ exam, onView, onEdit, onDelete }) => {
   // console.log(exam);
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <div className="bg-gray-800 rounded-md p-4 flex flex-col justify-between gap-4">
@@ -66,7 +70,7 @@ export const ExamCard = ({ exam, onView, onEdit, onDelete }) => {
           <Tooltip delayDuration={600}>
             <TooltipTrigger
               className="flex items-center justify-center p-2 bg-green-800 hover:bg-green-900 rounded-md"
-              onClick={onView}
+              onClick={location.pathname === "/admin/dashboard" ? () => {navigate("/admin/exams")} : onView}
             >
               {/* <Button size="sm" className="w-full md:w-auto"> */}
               <Eye className="h-5 w-5" />
