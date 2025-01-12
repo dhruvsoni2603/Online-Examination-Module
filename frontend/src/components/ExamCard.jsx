@@ -1,11 +1,14 @@
 import {
   CircleCheckBig,
   CircleHelp,
+  ExternalLink,
   Eye,
+  Loader,
   MoreHorizontal,
   Pencil,
   Timer,
   Trash,
+  User,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -18,13 +21,28 @@ import { Badge } from "./ui/badge";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Tooltip, TooltipContent, TooltipTrigger } from "./ui/tooltip";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useFetchAdmin } from "@/hooks/useFetchData";
 
 /* eslint-disable react/prop-types */
 export const ExamCard = ({ exam, onView, onEdit, onDelete }) => {
   // console.log(exam);
 
+  const { admin, isLoading, error } = useFetchAdmin(exam.createdBy);
+
   const location = useLocation();
   const navigate = useNavigate();
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-32">
+        <Loader className="animate-spin h-5 w-5" />
+      </div>
+    )
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
 
   return (
     <div className="bg-gray-800 rounded-md p-4 flex flex-col justify-between gap-4">
@@ -59,46 +77,61 @@ export const ExamCard = ({ exam, onView, onEdit, onDelete }) => {
           <div className="flex items-center gap-2">
             <Avatar className="h-6 w-6">
               {/* <AvatarImage src="https://randomuser.me/api/portrait" alt="John Doe" /> */}
-              <AvatarFallback className="text-xs">JD</AvatarFallback>
+              <AvatarFallback className="text-xs">
+                <User className="h-5 w-5" />
+              </AvatarFallback>
             </Avatar>
             {/* <User className="h-5 w-5" /> */}
-            <p className="text-xs text-gray-400">Created by John Doe</p>
+            <p className="text-xs text-gray-400">Created by {admin.name}</p>
           </div>
         </div>
-        {/* View and more options */}
-        <div className="flex flex-col md:flex-row justify-between md:items-center gap-2">
-          <Tooltip delayDuration={600}>
-            <TooltipTrigger
-              className="flex items-center justify-center p-2 bg-green-800 hover:bg-green-900 rounded-md"
-              onClick={location.pathname === "/admin/dashboard" ? () => {navigate("/admin/exams")} : onView}
-            >
-              {/* <Button size="sm" className="w-full md:w-auto"> */}
-              <Eye className="h-5 w-5" />
-              {/* </Button> */}
-            </TooltipTrigger>
-            <TooltipContent side="bottom">View</TooltipContent>
-          </Tooltip>
-          <DropdownMenu className="w-full md:w-auto">
-            <DropdownMenuTrigger className="flex items-center justify-center p-2 bg-gray-900 hover:bg-gray-700 rounded-md">
-              <MoreHorizontal className="h-5 w-5" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent
-              side="bottom"
-              align="center"
-              className="w-full"
-            >
-              <DropdownMenuItem className="text-blue-500" onClick={onEdit}>
-                <Pencil className="h-5 w-5 mr-2" />
-                Edit
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={onDelete} className="text-red-500">
-                <Trash className="h-5 w-5 mr-2" />
-                Delete
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+        {location.pathname === "/admin/exams" ? (
+          <div className="flex flex-col md:flex-row justify-between md:items-center gap-2">
+            <Tooltip delayDuration={600}>
+              <TooltipTrigger
+                className="flex items-center justify-center p-2 bg-green-800 hover:bg-green-900 rounded-md"
+                onClick={onView}
+              >
+                {/* <Button size="sm" className="w-full md:w-auto"> */}
+                <Eye className="h-5 w-5" />
+                {/* </Button> */}
+              </TooltipTrigger>
+              <TooltipContent side="bottom">View</TooltipContent>
+            </Tooltip>
+            <DropdownMenu className="w-full md:w-auto">
+              <DropdownMenuTrigger className="flex items-center justify-center p-2 bg-gray-900 hover:bg-gray-700 rounded-md">
+                <MoreHorizontal className="h-5 w-5" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                side="bottom"
+                align="center"
+                className="w-full"
+              >
+                <DropdownMenuItem className="text-blue-500" onClick={onEdit}>
+                  <Pencil className="h-5 w-5 mr-2" />
+                  Edit
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={onDelete} className="text-red-500">
+                  <Trash className="h-5 w-5 mr-2" />
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+        ) : (
+          <div className="flex flex-col md:flex-row justify-between md:items-center gap-2">
+            <Tooltip delayDuration={600}>
+              <TooltipTrigger
+                className="flex items-center justify-center p-2 bg-green-800 hover:bg-green-900 rounded-md"
+                onClick={() => navigate(`/admin/exams`)}
+              >
+                <ExternalLink className="h-5 w-5" />
+              </TooltipTrigger>
+              <TooltipContent side="bottom">View</TooltipContent>
+            </Tooltip>
+          </div>
+        )}
       </div>
     </div>
   );

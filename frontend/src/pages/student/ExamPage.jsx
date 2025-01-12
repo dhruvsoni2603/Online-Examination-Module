@@ -12,12 +12,47 @@ import { useEffect, useState, useCallback } from "react";
 
 export const ExamPage = () => {
 
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "Are you sure you want to leave?";
+    };
+
+    const handleCopy = (e) => {
+      e.preventDefault();
+      // alert("Copying is not allowed!");
+    };
+
+    const handleContextMenu = (e) => {
+      e.preventDefault();
+      // alert("Right-clicking is not allowed!");
+    };
+
+    const handleKeyDown = (e) => {
+      if (e.keyCode === 123 || (e.ctrlKey && e.shiftKey && e.keyCode === 73)) {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    window.addEventListener("copy", handleCopy);
+    window.addEventListener("contextmenu", handleContextMenu);
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      window.removeEventListener("copy", handleCopy);
+      window.removeEventListener("contextmenu", handleContextMenu);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
   const { logout } = useAuth();
 
   const studentId = getStudentId();
   const { exam, isLoading, error } = useFetchStudentExam(studentId);
 
-  console.log(exam);
+  // console.log(exam);
 
   const [submitLoading, setSubmitLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(true);
@@ -100,8 +135,8 @@ export const ExamPage = () => {
       logout();
     }
 
-    console.log(mcqRespData);
-    console.log(programmingRespData);
+    // console.log(mcqRespData);
+    // console.log(programmingRespData);
 
     setSubmitLoading(false);
   }, [exam?.id, logout, mcqResponses, programmingResponses]);
@@ -176,7 +211,7 @@ export const ExamPage = () => {
         submitLoading={submitLoading}
         timeLeft={timeLeft}
       />
-      <div className="container mx-auto py-4">
+      <div className="container mx-auto p-4">
         <TabsContent value="instructions">
           <div className="p-6 bg-gray-800 rounded-lg shadow-lg text-white">
             <h2 className="text-2xl font-bold mb-4 border-b border-gray-700 pb-2">
