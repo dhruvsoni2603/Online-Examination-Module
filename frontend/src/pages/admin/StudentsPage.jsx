@@ -144,6 +144,19 @@ export const StudentsPage = () => {
       },
     },
     {
+      accessorKey: "password",
+      header: "Password",
+      cell: ({ row }) => {
+        return (
+          <div className="flex items-center justify-center">
+            <div className="text-sm font-medium text-gray-100 text-center">
+              {row.original.password}
+            </div>
+          </div>
+        );
+      },
+    },
+    {
       accessorKey: "collegeName",
       header: ({ column }) => {
         return (

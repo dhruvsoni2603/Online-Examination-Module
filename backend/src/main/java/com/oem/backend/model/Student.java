@@ -37,6 +37,9 @@ public class Student {
     private String email;
 
     @Column(nullable = false)
+    private String password;
+
+    @Column(nullable = false)
     private boolean verified = false;
 
     @Column(nullable = false)
@@ -55,10 +58,11 @@ public class Student {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Student(String studentId, String name, String email, String collegeName, String branch, String phone, User user) {
+    public Student(String studentId, String name, String email, String password, String collegeName, String branch, String phone, User user) {
         this.studentId = studentId;
         this.name = name;
         this.email = email;
+        this.password = password;
         this.collegeName = collegeName;
         this.branch = branch;
         this.phone = phone;

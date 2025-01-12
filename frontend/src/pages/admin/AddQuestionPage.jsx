@@ -17,6 +17,13 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
+import { Editor } from "@monaco-editor/react";
+import { LanguageSelector } from "@/components/LanguageSelector";
+import { CODE_SNIPPETS } from "@/constants/codeEditorConstants";
+
+window.onbeforeunload = function () {
+  return "Are you sure you want to leave?";
+};
 
 export const AddQuestionPage = () => {
   const navigate = useNavigate();
@@ -50,11 +57,18 @@ export const AddQuestionPage = () => {
     question.options?.length > 3 ? question.options[3].text : ``
   );
   const [correctOption, setCorrectOption] = useState(
-    (question.options?.findIndex((option) => option.isCorrect === true) + 1) || "1"
+    question.options?.findIndex((option) => option.isCorrect === true) + 1 ||
+      "1"
   );
+  const [language, setLanguage] = useState("java");
   const [referenceAnswer, setReferenceAnswer] = useState(
-    question.referenceAnswer || ""
+    question.referenceAnswer || CODE_SNIPPETS[language] || ""
   );
+
+  const onSelect = (value) => {
+    setLanguage(value);
+    setReferenceAnswer(CODE_SNIPPETS[value]);
+  };
 
   // console.log("Correct Option: " + correctOption);
 
@@ -232,10 +246,6 @@ export const AddQuestionPage = () => {
     // console.log(newQuestion);
 
     mutation.mutate(newQuestion);
-  };
-
-  window.onbeforeunload = function () {
-    return "Are you sure you want to leave?";
   };
 
   return (
@@ -472,11 +482,15 @@ export const AddQuestionPage = () => {
                 <Label htmlFor="refAnswer" className="text-2xl font-bold">
                   Reference Answer
                 </Label>
+                <LanguageSelector language={language} onSelect={onSelect} />
               </div>
-              <TextEditor
-                content={referenceAnswer}
-                setContent={setReferenceAnswer}
-                className="min-h-48"
+              <Editor
+                theme="vs-dark"
+                height="50vh"
+                language={language}
+                defaultValue={referenceAnswer}
+                value={referenceAnswer}
+                onChange={(value) => setReferenceAnswer(value)}
               />
             </div>
           )}

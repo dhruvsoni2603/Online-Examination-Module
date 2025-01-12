@@ -17,7 +17,7 @@ export const StudentNavbar = ({ activeState, onExamSubmit, submitLoading, timeLe
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 shadow-md">
+    <div className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50 px-4">
       <nav className="container mx-auto flex items-center justify-between py-4">
         <div>
           <img

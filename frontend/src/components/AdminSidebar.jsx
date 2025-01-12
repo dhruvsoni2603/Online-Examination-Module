@@ -1,4 +1,11 @@
-import { Award, BookOpenCheck, CircleHelp, House, Users } from "lucide-react";
+/* eslint-disable react/prop-types */
+import {
+  Award,
+  BookOpenCheck,
+  CircleHelp,
+  House,
+  Users,
+} from "lucide-react";
 
 import {
   Sidebar,
@@ -9,12 +16,11 @@ import {
 import { NavMain } from "./NavMain";
 import { NavUser } from "./NavUser";
 import { NavLink } from "react-router-dom";
-// This is sample data.
+
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Admin",
+    email: "admin@example.com",
   },
   navMain: [
     {
@@ -50,9 +56,9 @@ const data = {
   ],
 };
 
-export function AppSidebar(props) {
+export function AppSidebar({ adminData }) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="icon">
       <SidebarHeader>
         <NavLink to="/admin/dashboard">
           <img src="/roima_logo.png" alt="Logo" className="aspect-auto" />
@@ -62,7 +68,7 @@ export function AppSidebar(props) {
         <NavMain items={data.navMain} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={data.user} />
+        <NavUser user={adminData || data.user} />
       </SidebarFooter>
     </Sidebar>
   );
