@@ -6,7 +6,7 @@ import axiosInstance from "@/services/axiosInstance";
 import { getToken } from "@/services/jwt";
 import { useMutation } from "@tanstack/react-query";
 import { Loader, PlusCircle, RotateCcw } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export const AddStudentPage = () => {
@@ -86,7 +86,8 @@ export const AddStudentPage = () => {
 
   const randomPasswordGenerator = () => {
     const length = 8;
-    const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$&";
+    const charset =
+      "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$&";
     let password = "";
 
     for (let i = 0; i < length; i++) {
@@ -145,17 +146,30 @@ export const AddStudentPage = () => {
       return;
     }
 
-    const newStudent = {
-      studentId,
-      name,
-      email,
-      password: randomPasswordGenerator(),
-      collegeName,
-      branch,
-      phone,
-    };
+    if (!location.pathname.includes("edit-student")) {
+      const newStudent = {
+        studentId,
+        name,
+        email,
+        password: randomPasswordGenerator(),
+        collegeName,
+        branch,
+        phone,
+      };
 
-    createStudentMutation.mutate(newStudent);
+      createStudentMutation.mutate(newStudent);
+    } else {
+      const newStudent = {
+        id: student.id,
+        studentId,
+        name,
+        email,
+        collegeName,
+        branch,
+        phone,
+      };
+      createStudentMutation.mutate(newStudent);
+    }
   };
 
   const handleReset = () => {
@@ -167,9 +181,18 @@ export const AddStudentPage = () => {
     setPhone("");
   };
 
-  window.onbeforeunload = function () {
-    return "Are you sure you want to leave?";
-  };
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "Are you sure you want to leave?";
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
 
   return (
     <div className="px-4 py-2 mx-auto mt-12 w-full max-w-7xl">
@@ -188,7 +211,12 @@ export const AddStudentPage = () => {
             </p>
           </div>
           <div className="flex flex-col-reverse md:flex-row justify-end items-center gap-2 md:gap-4">
-            <Button type="reset" variant="outline" className="w-full md:w-auto" onClick={handleReset}>
+            <Button
+              type="reset"
+              variant="outline"
+              className="w-full md:w-auto"
+              onClick={handleReset}
+            >
               <RotateCcw className="h-6 w-6" />
               Reset
             </Button>

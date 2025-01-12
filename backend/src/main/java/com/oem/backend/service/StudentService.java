@@ -50,6 +50,7 @@ public class StudentService {
                 studentRegisterDTO.getStudentId(),
                 studentRegisterDTO.getName(),
                 studentRegisterDTO.getEmail(),
+                studentRegisterDTO.getPassword(),
                 studentRegisterDTO.getCollegeName(),
                 studentRegisterDTO.getBranch(),
                 studentRegisterDTO.getPhone(),
