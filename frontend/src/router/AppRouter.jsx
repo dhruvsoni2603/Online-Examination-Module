@@ -21,6 +21,7 @@ import { AddQuestionPage } from "@/pages/admin/AddQuestionPage";
 import { AddStudentPage } from "@/pages/admin/AddStudentPage";
 import { AddExamPage } from "@/pages/admin/AddExamPage";
 import { LoginForm } from "@/components/Login";
+import { SingleResultPage } from "@/pages/admin/SingleResultPage";
 
 // Private Route wrapper to check authentication and role
 const PrivateRoute = ({ children, allowedRoles }) => {
@@ -93,9 +94,8 @@ const AppRouter = () => {
           <Route path="questions" element={<QuestionsPage />} />
           <Route path="add-question" element={<AddQuestionPage />} />
           <Route path="edit-question" element={<AddQuestionPage />} />
-          <Route path="results" element={<ResultsPage />}>
-            <Route path=":examId" element={<ResultsPage />} />
-          </Route>
+          <Route path="results" element={<ResultsPage />} />
+          <Route path="results/:id" element={<SingleResultPage />} />
         </Route>
 
         {/* Redirect root to login */}

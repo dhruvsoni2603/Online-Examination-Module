@@ -1,12 +1,10 @@
 import { ExamCard } from "@/components/ExamCard";
 import { ResultCard } from "@/components/ResultCard";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useFetchExamResults, useFetchExams } from "@/hooks/useFetchData";
 import {
   BadgePlus,
   CirclePlus,
-  Eye,
   Loader,
   Target,
   UserPlus,
@@ -96,7 +94,7 @@ export const AdminDashboard = () => {
         )}
       </div>
       {/* Recent Exam Results */}
-      <div className="">
+      <div className="mb-8">
         <h1 className="text-lg font-bold mb-2">Recent Exam Results</h1>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {areResultsLoading && <Loader />}

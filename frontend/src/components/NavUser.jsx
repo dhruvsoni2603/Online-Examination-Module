@@ -3,17 +3,13 @@ import {
   ChevronRight,
   LogOut,
   User,
-  UserCog,
-  UserRoundPlus,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -56,7 +52,7 @@ export function NavUser({ user }) {
             align="end"
             sideOffset={4}
           >
-            <DropdownMenuGroup>
+            {/* <DropdownMenuGroup>
               <DropdownMenuItem className="flex items-center cursor-pointer hover:bg-gray-800">
                 <UserCog />
                 Account
@@ -66,7 +62,7 @@ export function NavUser({ user }) {
                 Add Admin
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> */}
             <DropdownMenuItem onClick={logout} className="flex items-center cursor-pointer hover:bg-gray-800">
               <LogOut />
               Log out
